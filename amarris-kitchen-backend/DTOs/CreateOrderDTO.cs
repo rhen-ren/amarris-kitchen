@@ -2,8 +2,8 @@
 {
     public class CreateOrderDTO
     {
-        public string OrderMode { get; set; }
-        public List<CreateOrderItemDTO> Items { get; set; }
+        public string OrderMode { get; set; } = String.Empty;
+        public List<CreateOrderItemDTO> ? Items { get; set; }
 
     }
 }
