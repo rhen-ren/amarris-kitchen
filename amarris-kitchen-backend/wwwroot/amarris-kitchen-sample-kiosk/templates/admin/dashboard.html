@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="../../css/admin.css">
+</head>
+
+<body onload="loadDashboard()">
+
+    <div class="nav">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="orders.html">Orders</a>
+        <a href="reports.html">Reports</a>
+        <button onclick="logout()">Logout</button>
+    </div>
+
+    <div class="container">
+        <h1>Admin Dashboard</h1>
+
+        <div class="cards">
+            <div class="card">
+                <h3>Total Orders</h3>
+                <p id="totalOrders">0</p>
+            </div>
+
+            <div class="card">
+                <h3>Today's Sales</h3>
+                <p id="totalSales">₱0</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../js/admin.js"></script>
+</body>
+
+</html>

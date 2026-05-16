@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Checkout</title>
+
+    <link rel="stylesheet" href="../css/kiosk.css">
+    <meta charset="utf-8" />
+
+</head>
+
+<body>
+
+    <div class="kiosk-container">
+
+        <div class="header">
+
+            Checkout
+
+        </div>
+
+        <div class="payment-box">
+
+            <h1>Ready to Checkout?</h1>
+
+            <p>
+                Review your order before payment.
+            </p>
+
+            <div id="checkoutSummary" class="summary-items-list">
+            </div>
+
+            <hr style="border: 0; border-top: 1px dashed #ccc; margin: 20px 0;" />
+
+            <div class="price-breakdown">
+                <div class="breakdown-line">
+                    <span>Gross Subtotal:</span>
+                    <span id="grossSubtotal">₱0.00</span>
+                </div>
+                <div class="breakdown-line">
+                    <span>12% VAT (Inclusive):</span>
+                    <span id="vatAmount">₱0.00</span>
+                </div>
+                <div class="breakdown-line total-line">
+                    <strong>Total Amount to Pay:</strong>
+                    <strong id="netTotal">₱0.00</strong>
+                </div>
+            </div>
+
+            <button class="big-button" onclick="toPayment()">
+
+                Continue to Payment
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <script src="../js/kiosk.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", loadCheckoutSummary);
+    </script>
+
+</body>
+
+</html>

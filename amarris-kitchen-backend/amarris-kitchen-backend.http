@@ -1,0 +1,40 @@
+@amarris_kitchen_backend_HostAddress = http://localhost:5250
+
+GET {{amarris_kitchen_backend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
+GET {{amarris_kitchen_backend_HostAddress}}/product
+Accept: application/json
+
+###
+GET {{amarris_kitchen_backend_HostAddress}}/product/Drinks
+Accept: application/json
+
+
+###
+GET {{amarris_kitchen_backend_HostAddress}}/product/Silog%20Meals
+Accept: application/json
+
+###
+GET {{amarris_kitchen_backend_HostAddress}}/category
+Accept: application/json
+
+
+### Create a New Order (Success Test Case)
+POST {{amarris_kitchen_backend_HostAddress}}/order/create
+Content-Type: application/json
+
+{
+  "orderMode": "Dine In",
+  "items": [
+    {
+      "productId": 1,
+      "qty": 2
+    },
+    {
+      "productId": 2,
+      "qty": 1
+    }
+  ]
+}

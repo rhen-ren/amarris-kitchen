@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Payment</title>
+
+    <link rel="stylesheet" href="../css/kiosk.css">
+    <meta charset="utf-8"/>
+
+</head>
+
+<body>
+
+    <div class="kiosk-container">
+
+        <div class="header">
+
+            Payment Method
+
+        </div>
+
+        <div class="payment-box">
+
+            <h1>Select Payment</h1>
+
+            <button class="big-button" onclick="cashPayment(); saveOrder();">
+
+                💵 Cash Payment
+
+            </button>
+
+            <button class="big-button" onclick="onlinePayment(); saveOrder();">
+
+                📱 Online Payment
+
+            </button>
+
+            <div id="qrBox" style="display:none;">
+
+                <h2>Scan QR to Pay</h2>
+
+                <img src="../images/QR_Code_Example.svg.png" class="fake-qr">
+
+                <p>
+                    Processing payment...
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="../js/kiosk.js"></script>
+
+</body>
+
+</html>

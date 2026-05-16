@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Cart</title>
+
+    <link rel="stylesheet" href="../css/kiosk.css">
+    <meta charset="utf-8" />
+
+</head>
+
+<body onload="loadCart()">
+
+    <div class="kiosk-container">
+
+        <div class="header">
+
+            🛒 Your Cart
+
+        </div>
+        
+        <div id="cartWrapper" style="flex:1; overflow-y: auto; padding: 10px;">
+
+            <div id="cartItems"></div>
+        </div>
+
+
+        <div class="cart-footer">
+            <h2 id="cartTotal">
+
+                Total: ₱0
+
+            </h2>
+
+            <button class="big-button" onclick="location.href='menu.html'">
+
+                ⬅ Add More Items
+
+            </button>
+
+            <button class="big-button" onclick="goCheckout()">
+
+                ✔ Proceed to Checkout
+
+            </button>
+        </div>
+    </div>
+
+    <script src="../js/kiosk.js"></script>
+
+</body>
+
+</html>

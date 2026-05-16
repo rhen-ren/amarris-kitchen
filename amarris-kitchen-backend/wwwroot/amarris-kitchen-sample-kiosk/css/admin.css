@@ -1,0 +1,54 @@
+body {
+    font-family: Arial;
+    background: #f4f4f4;
+    margin: 0;
+}
+
+/* LOGIN */
+.login-box {
+    width: 300px;
+    margin: 100px auto;
+    padding: 20px;
+    background: white;
+    text-align: center;
+    border-radius: 10px;
+}
+
+input {
+    width: 90%;
+    padding: 10px;
+    margin: 10px 0;
+}
+
+/* NAV */
+.nav {
+    background: #222;
+    padding: 10px;
+}
+
+.nav a,
+.nav button {
+    color: white;
+    margin-right: 10px;
+    text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+/* CONTAINER */
+.container {
+    padding: 20px;
+}
+
+.cards {
+    display: flex;
+    gap: 20px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    flex: 1;
+    border-radius: 10px;
+}
