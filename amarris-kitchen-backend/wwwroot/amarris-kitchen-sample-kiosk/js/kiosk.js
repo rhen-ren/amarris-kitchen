@@ -315,7 +315,7 @@ async function toPayment() {
 
     //create the order in the database
     try {
-        const response = await fetch('http://localhost:5250/order/create', {
+        const response = await fetch('/order/create', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(finalPayload)
@@ -323,7 +323,7 @@ async function toPayment() {
 
         if (response.ok) {
             const serverResult = await response.json();
-
+            localStorage.setItem("current_order_payment_id", serverResult.orderId);
             localStorage.removeItem("cart");
             localStorage.removeItem("kiosk_order");
             location.href = "payment.html";
@@ -370,7 +370,7 @@ function cashPayment() {
     localStorage.setItem("queue", queue);
     localStorage.setItem("payment", "cash");
 
-    saveOrder(queue);
+    // saveOrder(queue);
 
     location.href = "success.html";
 }
@@ -388,7 +388,7 @@ function onlinePayment() {
         localStorage.setItem("queue", queue);
         localStorage.setItem("payment", "online");
 
-        saveOrder(queue);
+        // saveOrder(queue);
 
         location.href = "success.html";
     }, 3000);
@@ -425,26 +425,26 @@ function newOrder() {
 
 // =========================
 
-function saveOrder(queue) {
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+// function saveOrder(queue) {
+//     let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-    let total = 0;
+//     let total = 0;
 
-    cart.forEach(item => {
-        total += item.price;
-    });
+//     cart.forEach(item => {
+//         total += item.price;
+//     });
 
-    let orders = JSON.parse(localStorage.getItem("orders")) || [];
+//     let orders = JSON.parse(localStorage.getItem("orders")) || [];
 
-    orders.push({
-        queue: queue,
-        total: total,
-        status: "Pending",
-        items: cart
-    });
+//     orders.push({
+//         queue: queue,
+//         total: total,
+//         status: "Pending",
+//         items: cart
+//     });
 
-    localStorage.setItem("orders", JSON.stringify(orders));
-}
+//     localStorage.setItem("orders", JSON.stringify(orders));
+// }
 
 
 

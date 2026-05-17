@@ -29,22 +29,6 @@ namespace amarris_kitchen_backend.Controllers
             try
             {
                 decimal grandTotal = 0;
-                //var orderItemsToSave = new List<OrderItem>();
-
-                //foreach (var itemDto in orderDto.Items)
-                //{
-                //    var product = await _context.Products.FindAsync(itemDto.ProductId);
-                //    if (product == null)
-                //    {
-                //        return NotFound();
-                //    }
-
-                //    decimal itemSubtotal = product.UnitPrice * itemDto.Qty;
-                //    grandTotal += itemSubtotal;
-
-                //    orderItemsToSave.Add(new OrderItem { ProductId = product.ProductId, Quantity = itemDto.Qty });
-
-                //}
 
                 var incomingProductIds = orderDto.Items.Select(i => i.ProductId).Distinct().ToList();
 
@@ -67,12 +51,6 @@ namespace amarris_kitchen_backend.Controllers
 
                 _context.Orders.Add(newOrder);
                 await _context.SaveChangesAsync();
-
-                //foreach (var item in orderItemsToSave)
-                //{
-                //    item.OrderId = newOrder.OrderId;
-                //    _context.OrderItems.Add(item);
-                //}
 
                 var orderItemsToSave = orderDto.Items.Select(itemDto => new OrderItem
                 {
