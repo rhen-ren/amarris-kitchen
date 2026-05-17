@@ -1,6 +1,7 @@
 # amarris-kitchen-backend
 
 # Prerequisites
+* C# Programming Language
 * .NET sdk 9 or 10
 * Mysql server
 * make sure 'amarris_kitchen' database exists on your Mysql server. check inside '/Sqlcode' if needed
