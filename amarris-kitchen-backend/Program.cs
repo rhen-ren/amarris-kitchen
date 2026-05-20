@@ -1,5 +1,6 @@
 //using amarris_kitchen_backend.Data;
 using amarris_kitchen_backend.Data;
+using amarris_kitchen_backend.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,10 +18,10 @@ builder.Services.AddCors(options =>
 });
 
 // Add services to the container.
-
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+builder.Services.AddHttpClient<IXenditService, XenditService>();
 
 
 

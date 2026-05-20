@@ -323,7 +323,7 @@ async function toPayment() {
 
         if (response.ok) {
             const serverResult = await response.json();
-            localStorage.setItem("current_order_payment_id", serverResult.orderId);
+            localStorage.setItem("current_order_id", serverResult.orderId);
             localStorage.removeItem("cart");
             localStorage.removeItem("kiosk_order");
             location.href = "payment.html";
@@ -339,27 +339,27 @@ async function toPayment() {
 // =========================
 // QUEUE GENERATOR (SAFE A-Z)
 // =========================
-let prefixIndex = 0;
-let counter = 1;
+// let prefixIndex = 0;
+// let counter = 1;
 
-function generateQueue() {
-    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+// function generateQueue() {
+//     const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-    const queue = `${letters[prefixIndex]}-${String(counter).padStart(3, "0")}`;
+//     const queue = `${letters[prefixIndex]}-${String(counter).padStart(3, "0")}`;
 
-    counter++;
+//     counter++;
 
-    if (counter > 999) {
-        counter = 1;
-        prefixIndex++;
+//     if (counter > 999) {
+//         counter = 1;
+//         prefixIndex++;
 
-        if (prefixIndex >= letters.length) {
-            prefixIndex = 0; // reset after Z
-        }
-    }
+//         if (prefixIndex >= letters.length) {
+//             prefixIndex = 0; reset after Z
+//         }
+//     }
 
-    return queue;
-}
+//     return queue;
+// }
 
 // =========================
 // CASH PAYMENT
@@ -378,20 +378,79 @@ function cashPayment() {
 // =========================
 // ONLINE PAYMENT (MOCK QR)
 // =========================
-function onlinePayment() {
-    const qr = document.getElementById("qrBox");
-    if (qr) qr.style.display = "block";
+// using xendit
+// sandbox
+// req an internet connection
+async function onlinePayment() {
+    // const qr = document.getElementById("qrBox");
+    // if (qr) qr.style.display = "block";
 
-    setTimeout(() => {
-        const queue = generateQueue();
+    // setTimeout(() => {
+    //     const queue = generateQueue();
 
-        localStorage.setItem("queue", queue);
-        localStorage.setItem("payment", "online");
+    //     localStorage.setItem("queue", queue);
+    //     localStorage.setItem("payment", "online");
 
         // saveOrder(queue);
 
-        location.href = "success.html";
-    }, 3000);
+    //     location.href = "success.html";
+    // }, 3000);
+
+
+    const orderId = localStorage.getItem("current_order_id");
+
+    const qr = document.getElementById("qrBox");
+    if (qr) {
+        qr.innerHTML = "<p>Initializing secure checkout with Xendit... Please wait.</p>";
+        qr.style.display = "block";
+    }
+
+    try {
+        //create payment
+        const response = await fetch("/payment/create", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                orderId: parseInt(orderId),
+                paymentMethod: "Online"
+            })
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            localStorage.setItem("current_payment_id", data.paymentId);
+            localStorage.setItem("queue", data.queueNumber);
+            localStorage.setItem("payment", "online");
+
+            if (data.checkoutUrl) {
+                const encodedUrl = encodeURIComponent(data.checkoutUrl);
+
+                const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodedUrl}`;
+
+                qr.innerHTML = `
+                    <div style = "background: white; padding: 15px; display: inline-block; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); margin-bottom: 15px;" >
+                        <img src="${qrImageUrl}" alt="Scan to Pay" style="width: 230px; height: 230px; display: block;" />
+                    </div >
+                    <p style="margin: 5px 0; font-weight: bold; color: #222; font-size: 1.1rem;">Scan to Pay with GCash, Maya, or QRPH</p>
+                    <p style="font-size: 0.85rem; color: #007bff; text-decoration: underline; cursor: pointer; margin-bottom: 20px;">
+                        <span onclick="window.open('${data.checkoutUrl}', '_blank')">(Or click here to simulate mobile camera scan)</span>
+                    </p>
+                    
+                    <button class="big-button" onclick="window.location.href='success.html'" style="background-color: #28a745; color: white; padding: 15px 30px; font-size: 1.2rem; border: none; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                        I have completed the payment
+                    </button>
+                `;
+            } else {
+                alert("Payment gateway returned an invalid URL.");
+            }
+        }
+        else {
+            alert("Could not reach the server");
+        }
+    }
+    catch (error) {
+            alert("Unable to reach the payment processor.");
+        }
 }
 
 // =========================
@@ -400,6 +459,7 @@ function onlinePayment() {
 function loadSuccess() {
     const queue = localStorage.getItem("queue");
     const payment = localStorage.getItem("payment");
+    const paymentId = localStorage.getItem("current_payment_id")
 
     const q = document.getElementById("queue");
     const p = document.getElementById("payment");

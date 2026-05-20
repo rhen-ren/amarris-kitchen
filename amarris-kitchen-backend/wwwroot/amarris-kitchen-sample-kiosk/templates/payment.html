@@ -24,13 +24,13 @@
 
             <h1>Select Payment</h1>
 
-            <button class="big-button" onclick="cashPayment(); saveOrder();">
+            <button class="big-button" onclick="cashPayment();">
 
                 💵 Cash Payment
 
             </button>
 
-            <button class="big-button" onclick="onlinePayment(); saveOrder();">
+            <button class="big-button" onclick="onlinePayment();">
 
                 📱 Online Payment
 
@@ -40,7 +40,7 @@
 
                 <h2>Scan QR to Pay</h2>
 
-                <img src="../images/QR_Code_Example.svg.png" class="fake-qr">
+                <img src="" class="fake-qr">
 
                 <p>
                     Processing payment...
@@ -52,6 +52,7 @@
 
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="../js/kiosk.js"></script>
 
 </body>
