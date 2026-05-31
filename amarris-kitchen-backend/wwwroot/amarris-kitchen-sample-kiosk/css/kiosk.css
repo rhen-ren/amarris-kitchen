@@ -167,6 +167,13 @@ body {
 
     padding: 20px;
 }
+@media (orientation: landscape)
+{
+    .product-grid{
+        grid-template-columns: repeat(3, 2fr); 
+        gap: 25px;
+    }
+}
 
 /* =========================================
    PRODUCT CARD

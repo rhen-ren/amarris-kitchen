@@ -5,6 +5,7 @@ using amarris_kitchen_backend.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography.X509Certificates;
 
 namespace amarris_kitchen_backend.Controllers
 {
@@ -79,58 +80,67 @@ namespace amarris_kitchen_backend.Controllers
                 Console.WriteLine($"[SYSTEM CRASH DEATILS]: {ex.ToString()}");
                 return StatusCode(500, "Error while processing request");
             }
+
         }
-        //xendit will call this
-        //[HttpPost("webhook")]
-        //public async Task<IActionResult> XenditCallback([FromBody] XenditWebhookDTO callbackData)
-        //{
-        //    if(callbackData == null || callbackData.status != "PAID")
-        //    {
-        //        return BadRequest();
-        //    }
+        [HttpPost("finalize")]
+        public async Task<IActionResult> FinalizePayment([FromBody] CreatePaymentDTO paymentDto)
+        {
+            if (paymentDto == null)
+            {
+                return BadRequest();
+            }
 
-        //    if(!int.TryParse(callbackData.external_id, out int orderId))
-        //    {
-        //        return BadRequest();
-        //    }
+            using var transaction = await _context.Database.BeginTransactionAsync();
 
-        //    using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                var order = await _context.Orders.FindAsync(paymentDto.OrderId);
+                if (order == null)
+                {
+                    return NotFound();
+                }
 
-        //    try
-        //    {
-        //        var payment = await _context.Payments.FirstOrDefaultAsync(p => p.OrderId == orderId);
-        //        var order = await _context.Orders.FirstOrDefaultAsync(o => o.OrderId == orderId);
-
-        //        if (payment != null)
-        //        {
-        //            payment.AmountPaid = callbackData.amount;
-        //            payment.Trn = callbackData.id;
-        //            payment.PaymentDate = DateTime.Now;
+                order.Status = "Paid";
+                _context.Orders.Update(order);
 
 
+                var payment = await _context.Payments
+                    .FirstOrDefaultAsync(p => p.OrderId == paymentDto.OrderId);
+
+                if(payment == null)
+                {
+                    payment = new Payment
+                    {
+                        OrderId = paymentDto.OrderId,
+                        Order = order,
+                        PaymentMethod = paymentDto.PaymentMethod,
+                        PaymentDate = DateTime.Now,
+                        Discount = 0,
+                        Vat = 0
+                    };
+
+                    _context.Payments.Add(payment);
+                }
+
+                payment.AmountPaid = order.Price;
+                payment.PaymentDate = DateTime.Now;
 
 
-        //            await _context.SaveChangesAsync();
-        //            await transaction.CommitAsync();
+                payment.Trn = "XND-" + Guid.NewGuid().ToString().Substring(0, 8).ToUpper();
+                _context.Payments.Update(payment);
 
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
 
-        //            return Ok();
-        //        }
-        //        if (order != null)
-        //        {
-        //            order.Status = "Complete";
-        //        }
-        //        else
-        //        {
-        //            Console.WriteLine("This Payment has no existing Order for #${orderId}");
-        //        }
-        //        return NotFound();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        await transaction.RollbackAsync();
-        //        return StatusCode(500, "Internal error updating records.");
-        //    }
-        //}
+                return Ok();
+
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                return StatusCode(500, "Internal error while finalizing transaction");
+            }
+        }
+        
     }
 }

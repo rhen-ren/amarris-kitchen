@@ -38,3 +38,12 @@ Content-Type: application/json
     }
   ]
 }
+### Create Admin
+POST {{amarris_kitchen_backend_HostAddress}}/admin/create
+Content-Type: application/json
+{
+  "AdminName": "Efren",
+  "Password": "gandako321",
+  "Email": "emailcom",
+  "Role": "Cashier"
+}

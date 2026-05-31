@@ -269,7 +269,7 @@ function goCheckout() {
 
     updateUsersOrderItems();
     const savedOrder = localStorage.getItem("kiosk_order");
-    alert(JSON.stringify(JSON.parse(savedOrder), null, 2));
+    // alert(JSON.stringify(JSON.parse(savedOrder), null, 2));
 
     location.href = "checkout.html";
 }
@@ -364,13 +364,34 @@ async function toPayment() {
 // =========================
 // CASH PAYMENT
 // =========================
-function cashPayment() {
-    const queue = generateQueue();
-
-    localStorage.setItem("queue", queue);
-    localStorage.setItem("payment", "cash");
-
+async function cashPayment()
+{
     // saveOrder(queue);
+
+    const orderId = localStorage.getItem("current_order_id");
+    try
+    {
+        //create payment
+        const response = await fetch("/payment/create", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                orderId: parseInt(orderId),
+                paymentMethod: "Cash"
+            })
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            localStorage.setItem("current_payment_id", data.paymentId);
+            localStorage.setItem("queue", data.queueNumber);
+            localStorage.setItem("payment", "cash");
+        }
+    }
+    catch (error)
+    {
+        alert("error processing payment");
+    }
 
     location.href = "success.html";
 }
@@ -456,7 +477,8 @@ async function onlinePayment() {
 // =========================
 // SUCCESS SCREEN
 // =========================
-function loadSuccess() {
+async function loadSuccess()
+{
     const queue = localStorage.getItem("queue");
     const payment = localStorage.getItem("payment");
     const paymentId = localStorage.getItem("current_payment_id")
@@ -473,7 +495,43 @@ function loadSuccess() {
             p.innerText = "Paid Online (Mock QR)";
         }
     }
+
+
+    //update payment in database if online
+    if (queue && payment === "online")
+    {
+        try
+        {
+            const response = await fetch("/payment/finalize",
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify
+                        ({
+                            orderId: parseInt(queue),
+                        paymentMethod: payment === "cash" ? "Cash" : "Online"})
+                                                                    
+                });
+
+            if (response.ok)
+            {
+                console.log("Success");
+                localStorage.removeItem("current_order_payment_id");
+            }
+        }
+        catch (error)
+        {
+            console.error();
+        }
+    }
+
+  
 }
+window.addEventListener('DOMContentLoaded', () => {
+    if (window.location.pathname.includes('success.html')) {
+        loadSuccess();
+    }
+});
 
 // =========================
 // RESET ORDER

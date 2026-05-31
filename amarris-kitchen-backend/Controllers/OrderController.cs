@@ -78,5 +78,12 @@ namespace amarris_kitchen_backend.Controllers
             }
 
         }
+        [HttpGet]
+        public async Task<IActionResult> GetOrders()
+        {
+            var orders = await _context.Orders.ToListAsync();
+
+            return Ok(orders);
+        }
     }
 }
